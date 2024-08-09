@@ -1,14 +1,27 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import { Stack } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import { Provider } from 'react-redux';
+import {store} from '../redux/store';
+import { useRouter } from 'expo-router';
+import { useDispatch,useSelector } from 'react-redux';
 const CustomHeader = ({ options }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { user, status } = useSelector(state => state.auth);
   return (
     <View style={styles.headerContainer}>
-      <Image 
-        source={require('../assets/images/blank-profile.webp')}
-        style={styles.leftImage}
-      />
+         {!user ? (
+        <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/Login')}>
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
+      ) : (
+        <Image
+          source={require('../assets/images/blank-profile.webp')}
+          style={styles.leftImage}
+        />
+      )}
       <Image 
         source={require('../assets/images/favicon.png')}
         style={styles.centerImage}
@@ -20,7 +33,7 @@ const CustomHeader = ({ options }) => {
 
 export default function RootLayout() {
   return (
-    <>
+    <Provider store={store}>
       <StatusBar
         barStyle="light-content" // Set the text color to light for better contrast
         backgroundColor="rgba(203, 23, 218, 0.34)" // Set the background color of the status bar
@@ -43,7 +56,8 @@ export default function RootLayout() {
         />
       </Stack>
       <Toast/>
-    </>
+      
+    </Provider>
   );
 }
 
@@ -71,5 +85,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  loginButton: {
+    display:"flex",
+    padding: 10,
+    borderRadius: 5,
+    alignContent:"flex-end",
+    alignItems:"flex-end",
+    top:"1%"
+  },
+  loginText: {
+    color: '#007bff',
+    fontSize: 16,
   },
 });

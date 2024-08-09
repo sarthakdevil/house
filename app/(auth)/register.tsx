@@ -2,12 +2,13 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from 'react-native-paper';
-import { Link, useRouter } from 'expo-router';
+import { Link, useRouter} from 'expo-router';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { account } from "../appwrite/appwrite";
 import Toast from 'react-native-toast-message';
-
+import { useSelector, useDispatch } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Define validation schema using Yup
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -23,7 +24,6 @@ const validationSchema = Yup.object().shape({
 
 export default function Register() {
   const router = useRouter();
-
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -52,6 +52,7 @@ export default function Register() {
                 visibilityTime: 600,
                 autoHide: true,
               });
+              await AsyncStorage.setItem("details", values.toString());
               router.push('/Login'); // Navigate to Login screen
             } catch (error) {
               setErrors({ email: 'Failed to create session' });

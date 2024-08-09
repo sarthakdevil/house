@@ -1,7 +1,9 @@
-import { Account, Client } from "react-native-appwrite"
+import { Client, Account } from 'react-native-appwrite';
 
-export const client = Client(context)
-    .setEndpoint("https://cloud.appwrite.io/v1")
-    .setProject("66b61304002acfa544c9")
+// Initialize the Client
+export const client = new Client()
+    .setEndpoint('https://cloud.appwrite.io/v1')
+    .setProject('66b61304002acfa544c9');
 
+// Initialize the Account
 export const account = new Account(client);

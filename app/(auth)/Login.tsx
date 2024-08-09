@@ -4,8 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { Button } from 'react-native-paper';
 import { Link } from 'expo-router';
-
+import { useSelector, useDispatch } from 'react-redux';
 export default function Index() {
+  const dispatch = useDispatch();
+  const { user, status, error } = useSelector(state => state.auth);
   const [buttonColor, setButtonColor] = useState('#007bff'); 
   const handlePressIn=()=>{
     setButtonColor('#0056b3');
@@ -34,10 +36,6 @@ export default function Index() {
         </View>
         <View style={styles.passcontainer}>
           <Text>Password</Text>
-          <TextInput style={styles.textInput} secureTextEntry />
-        </View>
-        <View style={styles.cpasscontainer}>
-          <Text>Confirm password</Text>
           <TextInput style={styles.textInput} secureTextEntry />
         </View>
         <Button
