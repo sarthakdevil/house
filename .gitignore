@@ -1,14 +1,48 @@
+# React Native
 node_modules/
-.expo/
-dist/
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
+package-lock.json
+yarn.lock
 
-# macOS
+# Expo
+.expo/
+.expo-shared/
+
+# Logs
+*.log
+*.tmp
+*.temp
+
+# Build output
+/dist/
+build/
+
+# OS-specific files
 .DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment files
+.env
+
+# Android
+*.apk
+*.aab
+*.keystore
+
+# iOS
+*.xcuserstate
+*.xcuserdata/
+*.xcscheme
+*.xcmappingstyle
+*.xcworkspace
+*.pbxuser
+*.pbxproj
+
+# Metro Bundler
+.cache/
+.metro/
