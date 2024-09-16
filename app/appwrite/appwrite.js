@@ -1,4 +1,4 @@
-import { Client, Account } from 'react-native-appwrite';
+import { Client, Account,Storage } from 'react-native-appwrite';
 
 // Initialize the Client
 export const client = new Client()
@@ -7,3 +7,4 @@ export const client = new Client()
 
 // Initialize the Account
 export const account = new Account(client);
+export const storage = new Storage(client);

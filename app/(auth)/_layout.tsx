@@ -1,9 +1,13 @@
 import { Stack } from 'expo-router';
 import { View, Text } from 'react-native';
 import React from 'react';
+import { useFonts } from 'expo-font';
+import Toast from 'react-native-toast-message';
 
 export default function Layout() {
   return (
+    <>
+    <Toast ref={(ref) => Toast.setRef(ref)} />
     <Stack>
       <Stack.Screen
         name="Login" // This will correspond to the "index.js" file inside the folder
@@ -18,5 +22,6 @@ export default function Layout() {
         }}
       />
     </Stack>
+    </>
   );
 }

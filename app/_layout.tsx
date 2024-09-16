@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import {store} from '../redux/store';
 import { useRouter } from 'expo-router';
 import { useDispatch,useSelector } from 'react-redux';
+import { logout } from '@/redux/slices/authslice';
 const CustomHeader = ({ options }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -26,7 +27,13 @@ const CustomHeader = ({ options }) => {
         source={require('../assets/images/favicon.png')}
         style={styles.centerImage}
       />
-      <Text style={styles.headerTitle}>{options.title || "Default Title"}</Text>
+       {!user ? (
+        ""
+      ) : (
+        <TouchableOpacity style={styles.logoutText} onPress={() => router.push('/Login')}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -98,4 +105,8 @@ const styles = StyleSheet.create({
     color: '#007bff',
     fontSize: 16,
   },
+  logoutText:{
+    color:"#C8102E",
+    fontSize:16,
+  }
 });

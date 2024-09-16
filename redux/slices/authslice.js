@@ -9,6 +9,10 @@ const initialState = {
     name: 'auth',
     initialState,
     reducers: {
+      loginRequest: (state) => {
+        state.status = 'loading';
+        state.error = null;
+      },
         loginSuccess: (state, action) => {
             state.status = 'succeeded';
             state.user = action.payload; // Store user information
