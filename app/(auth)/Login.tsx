@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from 'react-native-paper';
 import { Link, useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 import { loginFailure, loginRequest, loginSuccess } from '@/redux/slices/authslice';
@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { account } from '../appwrite/appwrite';
 
+// Validation Schema using Yup
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email address')
@@ -24,19 +25,19 @@ export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [buttonColor, setButtonColor] = useState('#007bff');
+  const [initialValues, setInitialValues] = useState({ email: '', password: '' });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedData = await AsyncStorage.getItem('details');
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          if (parsedData?.email && parsedData?.password) {
-            Formik.setValues(parsedData);
-          }
+        const email = await SecureStore.getItemAsync('email');
+        const password = await SecureStore.getItemAsync('password');
+        if (email && password) {
+          // Set initial values with stored email and password
+          setInitialValues({ email, password });
         }
       } catch (error) {
-        console.error('Error parsing JSON from AsyncStorage:', error);
+        console.error('Error retrieving data from SecureStore:', error);
       }
     };
     fetchData();
@@ -48,13 +49,13 @@ export default function Login() {
   const handleLogin = useCallback(async (values, { setSubmitting }) => {
     try {
       dispatch(loginRequest());
-  
+
       try {
         // Attempt to create a new session
         const response = await account.createEmailPasswordSession(values.email, values.password);
-        
+
         if (response && response.userId) {
-          const user = await account.get(); // Fetches the authenticated user's data
+          const user = await account.get(); // Fetch the authenticated user's data
           dispatch(loginSuccess(user)); // Dispatch success action with user data
           Toast.show({
             type: 'success',
@@ -64,6 +65,11 @@ export default function Login() {
             visibilityTime: 3000,
             autoHide: true,
           });
+
+          // Save email and password securely
+          await SecureStore.setItemAsync('email', values.email);
+          await SecureStore.setItemAsync('password', values.password);
+
           router.push('/(home)');
         }
       } catch (error) {
@@ -98,11 +104,11 @@ export default function Login() {
       setSubmitting(false);
     }
   }, [dispatch, router]);
-  
 
   return (
     <Formik
-      initialValues={{ email: '', password: '' }}
+      initialValues={initialValues} // Use initialValues state
+      enableReinitialize // Reinitialize form when initialValues change
       validationSchema={validationSchema}
       onSubmit={handleLogin}
     >
@@ -120,11 +126,11 @@ export default function Login() {
             <View style={[styles.circle, { top: "20%", right: "2%" }]} />
             <View style={[styles.circle, { top:"10%", left: "-20%" }]} />
           </LinearGradient>
-          
+
           <View style={styles.logincontainer}>
             <View style={styles.emailcontainer}>
               <Text>Email</Text>
-              <TextInput 
+              <TextInput
                 style={styles.textInput}
                 value={values.email}
                 onChangeText={handleChange('email')}
@@ -134,7 +140,7 @@ export default function Login() {
             </View>
             <View style={styles.passcontainer}>
               <Text>Password</Text>
-              <TextInput 
+              <TextInput
                 style={styles.textInput}
                 secureTextEntry
                 value={values.password}

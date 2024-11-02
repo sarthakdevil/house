@@ -1,38 +1,52 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, StatusBar, TouchableOpacity, Pressable } from 'react-native';
 import { Stack } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { Provider } from 'react-redux';
-import {store} from '../redux/store';
+import { store } from '../redux/store';
 import { useRouter } from 'expo-router';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/redux/slices/authslice';
+import { account } from './appwrite/appwrite';
+
 const CustomHeader = ({ options }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { user, status } = useSelector(state => state.auth);
+  const { user } = useSelector(state => state.auth);
+
+  const handleProfile = () => {
+    router.push('/(auth)/profile');
+  };
+
+  const handleLogout = async () => {
+    await account.deleteSession('current');
+    dispatch(logout()); // Dispatch logout action
+    router.push('/Login');
+    Toast.show({ type: 'success', text1: 'Logged out successfully' });
+  };
+
   return (
     <View style={styles.headerContainer}>
-         {!user ? (
+      {!user ? (
         <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/Login')}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
       ) : (
-        <Image
-          source={require('../assets/images/blank-profile.webp')}
-          style={styles.leftImage}
-        />
+        <Pressable onPress={handleProfile}>
+          <Image
+            source={require('../assets/images/blank-profile.webp')}
+            style={styles.leftImage}
+          />
+        </Pressable>
       )}
       <Image 
         source={require('../assets/images/favicon.png')}
         style={styles.centerImage}
       />
-       {!user ? (
-        ""
-      ) : (
-        <TouchableOpacity style={styles.logoutText} onPress={() => router.push('/Login')}>
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
+      {!user ? null : (
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -50,11 +64,10 @@ export default function RootLayout() {
           header: (props) => <CustomHeader {...props} />, // Use the custom header component
         }}
       >
-      <Stack.Screen
+        <Stack.Screen
           name="(auth)"
-          options={{headerShown:false}}
+          options={{ headerShown: false }}
         />
-        
         <Stack.Screen
           name="(home)"
           options={{
@@ -62,8 +75,7 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-      <Toast/>
-      
+      <Toast />
     </Provider>
   );
 }
@@ -81,32 +93,27 @@ const styles = StyleSheet.create({
     width: 30, // Adjust the size as needed
     height: 30,
     resizeMode: 'contain',
-    borderRadius:100
+    borderRadius: 100,
   },
   centerImage: {
     width: 30, // Adjust the size as needed
     height: 30,
     resizeMode: 'contain',
   },
-  headerTitle: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
   loginButton: {
-    display:"flex",
+    display: "flex",
     padding: 10,
     borderRadius: 5,
-    alignContent:"flex-end",
-    alignItems:"flex-end",
-    top:"1%"
+    alignContent: "flex-end",
+    alignItems: "flex-end",
+    top: "1%",
   },
   loginText: {
     color: '#007bff',
     fontSize: 16,
   },
-  logoutText:{
-    color:"#C8102E",
-    fontSize:16,
+  logoutText: {
+    color: "#C8102E",
+    fontSize: 16,
   }
 });

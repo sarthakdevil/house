@@ -21,6 +21,12 @@ export default function Layout() {
             headerShown: false, // You can customize header visibility
         }}
       />
+            <Stack.Screen
+        name="profile" // This will correspond to the "details.js" file
+        options={{
+            headerShown: false, // You can customize header visibility
+        }}
+      />
     </Stack>
     </>
   );

@@ -1,7 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 /**
@@ -139,7 +140,25 @@ android {
         }
     }
 }
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:X.X.X' // your Android Gradle Plugin version
+        classpath 'com.google.gms:google-services:4.3.10' // Add this line
+    }
+}
 
+// All projects will have access to the following repositories
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
